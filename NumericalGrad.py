@@ -1,24 +1,22 @@
 from ForwardProp import CostFunc
 import numpy as np
-
-def NumericalGradient(X,y,Theta1,Theta2):
-	theta1 = np.transpose(Theta1.reshape(Theta1.size,order='F'))
-	theta2 = np.transpose(Theta2.reshape(Theta2.size,order='F'))
-	thetaVect = np.transpose(np.append(theta1,theta2))
+import time
+def NumericalGradient(X,y,Theta1,Theta2,Theta3,L = 0):
+	theta1 = np.copy(np.transpose(Theta1.reshape(Theta1.size,order='F')))
+	theta2 = np.copy(np.transpose(Theta2.reshape(Theta2.size,order='F')))
+	theta3 = np.copy(Theta3.reshape(Theta3.size,order='F').T)
+	thetaVect = np.append(theta1,theta2)
+	thetaVect = np.append(thetaVect,theta3).T
 	testVect = np.transpose(np.zeros(np.size(thetaVect)))
-	numgrad = testVect = np.transpose(np.zeros(np.size(thetaVect)))
+	numgrad = np.transpose(np.zeros(np.size(thetaVect)))
 	eps = .0001
 	for i in range(thetaVect.shape[0]):
 		print("Iteration %d" % (i))
 		testVect[i] = eps
-		negative = thetaVect - testVect
-		positive = thetaVect - testVect
-		Therta1neg = negative[0:np.size(Theta1)].reshape(Theta1.shape[0],Theta1.shape[1])
-		Therta2neg = negative[np.size(Theta1):].reshape(Theta2.shape[0],Theta2.shape[1])
-		Therta1pos = positive[0:np.size(Theta1)].reshape(Theta1.shape[0],Theta1.shape[1])
-		Therta2pos = positive[np.size(Theta1):].reshape(Theta2.shape[0],Theta2.shape[1])
-		loss1 = CostFunc(X, Therta1neg, Therta2neg, y)
-		loss2 = CostFunc(X, Therta1pos, Therta2pos, y)
-		numgrad[i] = (loss2 - loss1)/ (2*eps)
+		negativeThetaVec = thetaVect - testVect
+		positiveThetaVec = thetaVect + testVect
+		loss1 = CostFunc(negativeThetaVec,X, y,Theta1.shape[1]-1,Theta1.shape[0],Theta2.shape[0],Theta3.shape[0],L)
+		loss2 = CostFunc(positiveThetaVec,X, y,Theta1.shape[1]-1,Theta1.shape[0],Theta2.shape[0],Theta3.shape[0],L)
+		numgrad[i] = (loss2 - loss1) / (2*eps)
 		testVect[i] = 0
 	return numgrad
