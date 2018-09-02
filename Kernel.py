@@ -16,8 +16,8 @@ def logicalVectorize(y):
 	for i in range(y.shape[0]):
 		newY[i][y[i]] = 1
 	return newY
-hidden_layer_nodes = 150
-hidden_layer_2_nodes = 150
+hidden_layer_nodes = 300
+hidden_layer_2_nodes = 300
 classification_nodes = 10
 if __name__ == '__main__':
 	Location = 'train.csv'
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 	print(ThetaVect)
 	print(y)
 	yLabels = np.argmax(y,axis=1)
-	args=(X,y,X.shape[1],hidden_layer_nodes,hidden_layer_2_nodes,classification_nodes,17)
+	args=(X,y,X.shape[1],hidden_layer_nodes,hidden_layer_2_nodes,classification_nodes,2.5)
 	a = time.time()
 	grad = fmin_cg(CostFunc,ThetaVect,fprime=BackProp,args=args, maxiter = 1000)
 	b = time.time()
